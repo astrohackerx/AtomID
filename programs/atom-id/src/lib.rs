@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Burn, Token};
 
-declare_id!("2xft7Epr3tKEhCTJ7MNAao7H5RNKzT4k2q14p2HdQu3i");
+declare_id!("9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1");
 
 #[program]
 pub mod atom_id {

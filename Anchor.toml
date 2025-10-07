@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-atom_id = "2xft7Epr3tKEhCTJ7MNAao7H5RNKzT4k2q14p2HdQu3i"
+atom_id = "9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1"
 
 [programs.mainnet]
-atom_id = "2xft7Epr3tKEhCTJ7MNAao7H5RNKzT4k2q14p2HdQu3i"
+atom_id = "9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1"
 
 [registry]
 url = "https://api.apr.dev"
