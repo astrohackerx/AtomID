@@ -6,16 +6,16 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-atom_id = "9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1"
+atom_id = "kpUANLDfVXqk47eTvKEXVSfreDjPKKB2YVe6cahnfXE"
 
 [programs.mainnet]
-atom_id = "9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1"
+atom_id = "kpUANLDfVXqk47eTvKEXVSfreDjPKKB2YVe6cahnfXE"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "mainnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

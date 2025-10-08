@@ -5,7 +5,7 @@ import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as fs from "fs";
 
 async function main() {
-  const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
 
   const walletPath = process.env.HOME + "/.config/solana/id.json";
   const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
@@ -17,7 +17,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("9ntZFb85wU5zng1rM6pTnzbcm9S4s8iTMvhBUYyLZQc1");
+  const programId = new PublicKey("kpUANLDfVXqk47eTvKEXVSfreDjPKKB2YVe6cahnfXE");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
@@ -25,7 +25,7 @@ async function main() {
   console.log("Program ID:", program.programId.toString());
   console.log("Admin/Payer:", provider.wallet.publicKey.toString());
 
-  const burnMint = new PublicKey("DEmAM5nQE5fpAwu3xotx5N19FG6GiDt3e3o6ysDYmaqT");
+  const burnMint = new PublicKey("6KeQaJXFHczWKjrcXdMGKP773JKQmMWDXy4446adpump");
   console.log("$ATOM Mint:", burnMint.toString());
 
   const minCreateBurn = new BN(1_000_000_000);
@@ -78,7 +78,7 @@ async function main() {
   console.log("\n✅ AtomID Protocol Initialized!");
   console.log("Transaction signature:", tx);
   console.log(
-    `View on Solscan: https://solscan.io/tx/${tx}?cluster=devnet`
+    `View on Solscan: https://solscan.io/tx/${tx}`
   );
 
   const config = await program.account.atomConfig.fetch(atomConfigPda);
