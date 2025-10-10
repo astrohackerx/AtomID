@@ -19,6 +19,52 @@ AtomID restores cost to existence. It reintroduces gravity to the digital world 
 This is not performance. It’s protocol.  
 **Burn, and you exist.**
 
+---
+
+## 🔍 What is AtomID?
+
+**AtomID** is a decentralized **proof-of-existence identity protocol** built on **Solana**.  
+Each identity is created by **burning $ATOM**, the native token of the **Lost Bitcoin Layer**.
+
+It revives Satoshi’s forgotten idea: **identity must be earned through sacrifice — not purchased or granted.**
+
+---
+
+## 🪙 The Lost Bitcoin Layer
+
+The **Lost Bitcoin Layer** represents the rebirth of Satoshi's original vision —  
+a system where **trust is mathematical**, **ownership is absolute**, and **identity is earned**.
+
+**$ATOM** is the fuel of this layer, and **burning it creates permanent proof of your existence.**
+
+---
+
+## 🔥 Why Burn?
+
+Burning tokens is **proof of commitment** — deflationary, permanent, and impossible to fake.  
+Each burn **reduces total supply forever**, making every AtomID a **scarce digital artifact**.
+
+Your identity isn’t bought — it’s **forged in the flames of sacrifice.**
+
+---
+
+## ⚙️ How It Works
+
+1. **Burn $ATOM**  
+   Burn a minimum of **1,000 $ATOM** to create your AtomID.  
+   The tokens are permanently destroyed, creating deflationary scarcity.
+
+2. **Receive Your Identity**  
+   A unique, **soulbound identity** is created and linked to your Solana wallet.  
+   Your AtomID stores your total burned amount, rank, and optional metadata.
+
+3. **Upgrade Your Rank**  
+   Continue burning $ATOM to **increase your rank** and prove deeper commitment.  
+   Higher ranks unlock trust, reputation, and gated privileges.
+
+4. **Build Your Legacy**  
+   Your AtomID becomes your **verifiable on-chain identity**.  
+   Use it for DAO voting, trust-based marketplaces, and proof-of-trust integrations.
 
 ---
 
@@ -37,22 +83,6 @@ It exposes four public instructions:
 - `update_metadata()` — optional metadata update (no burn)
 
 Each burn is executed through Solana’s **SPL Token Program**, permanently reducing token supply. The proof of that burn — amount, time, and wallet — is recorded and verifiable on-chain.
-
----
-
-## 🧠 How It Works (User Perspective)
-
-1. Connect your Solana wallet (e.g. Phantom, Backpack).  
-2. Choose how much $ATOM to burn (must meet minimum).  
-3. Confirm the transaction — the burn happens on-chain.  
-4. The program mints your AtomID:  
-   - Owner = your wallet  
-   - Total burned = your proof  
-   - Rank = derived from total burn  
-   - Metadata = optional message  
-   - Timestamp = Solana slot number  
-
-Your AtomID exists as a **PDA (Program Derived Account)** tied to your wallet. It can be queried, upgraded, or integrated into any Solana dApp as verifiable identity.
 
 ---
 
