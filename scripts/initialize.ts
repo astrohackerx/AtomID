@@ -36,11 +36,15 @@ async function main() {
   );
 
   const rankThresholds = [
+    new BN(1_000_000_000),
     new BN(5_000_000_000),
     new BN(10_000_000_000),
+    new BN(25_000_000_000),
     new BN(50_000_000_000),
     new BN(100_000_000_000),
     new BN(250_000_000_000),
+    new BN(500_000_000_000),
+    new BN(1_000_000_000_000),
   ];
 
   console.log("\n🏆 Rank Thresholds:");
