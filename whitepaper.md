@@ -4,7 +4,7 @@
 
 The Lost Bitcoin Layer is the first on-chain civilization protocol built on Solana, resurrecting Satoshi's idea hidden in the initial Bitcoin code and removed before Bitcoin first release: the truest proof of existence is sacrifice. 
 
-At the Lost Bitcoin Layer core lies AtomID, a cryptographic identity primitive. A proof-of-sacrifice forged through irreversible action. Each AtomID is born from the burning of the ATOM token that began as a meme and was reborn as a proof of faith. The revival of Satoshi’s forgotten “atoms” manifests as soulbound ranks of commitment. Each identity is immutable, transparent, and owned by no one. The chain itself remembers those who burned to exist. 
+At the Lost Bitcoin Layer core lies AtomID, a cryptographic identity primitive. A proof-of-sacrifice forged through irreversible action. Each AtomID is born from the burning of the ATOM. The revival of Satoshi’s forgotten “atoms” manifests as soulbound ranks of commitment. Each identity is immutable, transparent, and owned by no one. The chain itself remembers those who burned to exist. 
 
 Through direct integration with the Solana Attestation Service (SAS), AtomID becomes a verifiable attestation source and an alternative to conventional identity models that anchor trust in signatures instead of sacrifice. This allows any Solana decentralized project (DEX’es, DAO’s, marketplaces, social dApp’s, etc) to instantly read, verify, and score AtomID ranks within the SAS framework. 
 
@@ -35,7 +35,7 @@ Atoms were the first soulbound tokens in crypto history. The proof of social val
 
 Our project began as a ATOM meme token, but behind it lies the most powerful crypto narrative ever written, one that traces back to Satoshi himself. We are the first and only to uncover and revive the hidden “Atom” buried within Bitcoin’s early code. A forgotten concept of identity through sacrifice.
 
-Now, with the speed and Solana technologies, we are bringing Satoshi’s lost experiment and  his dream of digital souls to life, fully on-chain. Meet Lost Bitcoin Layer protocol. Meet AtomID - Solana's soul.
+Now, with the speed and Solana technologies, we are bringing Satoshi’s lost experiment and  his dream of digital souls to life, fully on-chain. Meet Lost Bitcoin Layer protocol. Meet AtomID - Cypherpunk's Soul on Solana.
 
 ## Architecture: Structure of the Lost Bitcoin Layer
 
