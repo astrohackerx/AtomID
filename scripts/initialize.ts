@@ -5,8 +5,8 @@ import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as fs from "fs";
 
 async function main() {
-  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
-
+  // const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  const connection = new Connection("https://api.devnet.solana.com", "confirmed");
   const walletPath = process.env.HOME + "/.config/solana/id.json";
   const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
   const keypair = Keypair.fromSecretKey(new Uint8Array(keypairData));
@@ -17,7 +17,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("kpUANLDfVXqk47eTvKEXVSfreDjPKKB2YVe6cahnfXE");
+  const programId = new PublicKey("FYZF86EwAZwNevSsFWswxzcx5VvRyQRHdB2GPcosyMLE");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
@@ -25,7 +25,7 @@ async function main() {
   console.log("Program ID:", program.programId.toString());
   console.log("Admin/Payer:", provider.wallet.publicKey.toString());
 
-  const burnMint = new PublicKey("6KeQaJXFHczWKjrcXdMGKP773JKQmMWDXy4446adpump");
+  const burnMint = new PublicKey("DEmAM5nQE5fpAwu3xotx5N19FG6GiDt3e3o6ysDYmaqT");
   console.log("$ATOM Mint:", burnMint.toString());
 
   const minCreateBurn = new BN(1_000_000_000);
@@ -75,8 +75,33 @@ async function main() {
 
   console.log("\n🚀 Sending initialize transaction...");
 
+  // ==========================================
+  // SAS SETUP REQUIRED BEFORE RUNNING THIS!
+  // ==========================================
+  // You must first create:
+  // 1. SAS Credential (using createCredential instruction)
+  // 2. SAS Schema (using createSchema instruction)
+  // See SAS_INTEGRATION.md for detailed setup instructions
+
+  // Replace these with your actual SAS account addresses after setup
+  const sasCredential = new PublicKey("3Ltzb5JxsZThRmz4gkUYDFYP82pYv2xUYjuJfM4TYcGS");
+  const sasSchema = new PublicKey("6WnKt5fKak5xRYS2X1Pc4DGxtHLErG7JwboL5nFBXcQD");
+  const sasAuthority = keypair.publicKey; // Or use a dedicated signer keypair
+
+  console.log("\n🔗 SAS Integration:");
+  console.log("  SAS Credential:", sasCredential.toString());
+  console.log("  SAS Schema:", sasSchema.toString());
+  console.log("  SAS Authority:", sasAuthority.toString());
+
   const tx = await program.methods
-    .initialize(minCreateBurn, rankThresholds, burnMint)
+    .initialize(
+      minCreateBurn,
+      rankThresholds,
+      burnMint,
+      sasCredential,
+      sasSchema,
+      sasAuthority
+    )
     .rpc();
 
   console.log("\n✅ AtomID Protocol Initialized!");
@@ -90,8 +115,11 @@ async function main() {
   console.log("  Admin:", config.admin.toString());
   console.log("  Min Create Burn:", config.minCreateBurn.toString());
   console.log("  Burn Mint:", config.burnMint.toString());
+  console.log("  SAS Credential:", config.sasCredential.toString());
+  console.log("  SAS Schema:", config.sasSchema.toString());
+  console.log("  SAS Authority:", config.sasAuthority.toString());
   console.log("  Rank Thresholds:", config.rankThresholds.map(t => t.toString()));
-  console.log("\n🔥 Protocol is ready! Users can now burn $ATOM to create AtomIDs.");
+  console.log("\n🔥 Protocol is ready! Users can now burn $ATOM to create AtomIDs with SAS attestations!");
 }
 
 main()
