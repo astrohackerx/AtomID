@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Burn, Token};
 
+mod sas_integration;
+use sas_integration::*;
+
 declare_id!("kpUANLDfVXqk47eTvKEXVSfreDjPKKB2YVe6cahnfXE");
 
 #[program]
@@ -12,6 +15,9 @@ pub mod atom_id {
         min_create_burn: u64,
         rank_thresholds: Vec<u64>,
         burn_mint: Pubkey,
+        sas_credential: Pubkey,
+        sas_schema: Pubkey,
+        sas_authority: Pubkey,
     ) -> Result<()> {
         require!(
             rank_thresholds.len() <= 10,
@@ -30,6 +36,9 @@ pub mod atom_id {
         config.min_create_burn = min_create_burn;
         config.rank_thresholds = rank_thresholds;
         config.burn_mint = burn_mint;
+        config.sas_credential = sas_credential;
+        config.sas_schema = sas_schema;
+        config.sas_authority = sas_authority;
         config.bump = ctx.bumps.atom_config;
 
         emit!(ConfigInitialized {
@@ -67,6 +76,21 @@ pub mod atom_id {
             require!(meta.len() <= 200, ErrorCode::MetadataTooLong);
         }
 
+        require!(
+            ctx.accounts.sas_credential.key() == config.sas_credential,
+            ErrorCode::InvalidSasCredential
+        );
+
+        require!(
+            ctx.accounts.sas_schema.key() == config.sas_schema,
+            ErrorCode::InvalidSasSchema
+        );
+
+        require!(
+            ctx.accounts.sas_authority.key() == config.sas_authority,
+            ErrorCode::InvalidSasAuthority
+        );
+
         token::burn(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
@@ -89,6 +113,36 @@ pub mod atom_id {
         atom_id.created_at_slot = current_slot;
         atom_id.updated_at_slot = current_slot;
         atom_id.bump = ctx.bumps.atom_id;
+
+        let attestation_data = serialize_atomid_attestation_data(
+            atom_id.rank,
+            atom_id.total_burned,
+            atom_id.created_at_slot,
+        );
+
+        let attestation_ix = create_attestation_instruction(
+            ctx.accounts.user.key(),
+            ctx.accounts.sas_authority.key(),
+            config.sas_credential,
+            config.sas_schema,
+            ctx.accounts.sas_attestation.key(),
+            ctx.accounts.system_program.key(),
+            ctx.accounts.user.key(),
+            attestation_data,
+            -1,
+        )?;
+
+        anchor_lang::solana_program::program::invoke(
+            &attestation_ix,
+            &[
+                ctx.accounts.user.to_account_info(),
+                ctx.accounts.sas_authority.to_account_info(),
+                ctx.accounts.sas_credential.to_account_info(),
+                ctx.accounts.sas_schema.to_account_info(),
+                ctx.accounts.sas_attestation.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
 
         emit!(AtomIdCreated {
             owner: atom_id.owner,
@@ -122,6 +176,42 @@ pub mod atom_id {
             require!(meta.len() <= 200, ErrorCode::MetadataTooLong);
         }
 
+        require!(
+            ctx.accounts.sas_credential.key() == config.sas_credential,
+            ErrorCode::InvalidSasCredential
+        );
+
+        require!(
+            ctx.accounts.sas_schema.key() == config.sas_schema,
+            ErrorCode::InvalidSasSchema
+        );
+
+        require!(
+            ctx.accounts.sas_authority.key() == config.sas_authority,
+            ErrorCode::InvalidSasAuthority
+        );
+
+        let close_ix = close_attestation_instruction(
+            ctx.accounts.user.key(),
+            ctx.accounts.sas_authority.key(),
+            config.sas_credential,
+            ctx.accounts.old_sas_attestation.key(),
+            ctx.accounts.sas_event_authority.key(),
+            ctx.accounts.system_program.key(),
+        )?;
+
+        anchor_lang::solana_program::program::invoke(
+            &close_ix,
+            &[
+                ctx.accounts.user.to_account_info(),
+                ctx.accounts.sas_authority.to_account_info(),
+                ctx.accounts.sas_credential.to_account_info(),
+                ctx.accounts.old_sas_attestation.to_account_info(),
+                ctx.accounts.sas_event_authority.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
+
         token::burn(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
@@ -148,6 +238,36 @@ pub mod atom_id {
         if let Some(meta) = metadata {
             atom_id.metadata = meta;
         }
+
+        let attestation_data = serialize_atomid_attestation_data(
+            atom_id.rank,
+            atom_id.total_burned,
+            atom_id.created_at_slot,
+        );
+
+        let attestation_ix = create_attestation_instruction(
+            ctx.accounts.user.key(),
+            ctx.accounts.sas_authority.key(),
+            config.sas_credential,
+            config.sas_schema,
+            ctx.accounts.new_sas_attestation.key(),
+            ctx.accounts.system_program.key(),
+            ctx.accounts.user.key(),
+            attestation_data,
+            -1,
+        )?;
+
+        anchor_lang::solana_program::program::invoke(
+            &attestation_ix,
+            &[
+                ctx.accounts.user.to_account_info(),
+                ctx.accounts.sas_authority.to_account_info(),
+                ctx.accounts.sas_credential.to_account_info(),
+                ctx.accounts.sas_schema.to_account_info(),
+                ctx.accounts.new_sas_attestation.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
 
         emit!(AtomIdUpgraded {
             owner: atom_id.owner,
@@ -251,6 +371,19 @@ pub struct CreateAtomId<'info> {
     #[account(mut)]
     pub atom_mint: AccountInfo<'info>,
 
+    /// CHECK: SAS attestation PDA
+    #[account(mut)]
+    pub sas_attestation: AccountInfo<'info>,
+
+    /// CHECK: SAS credential account from config
+    pub sas_credential: AccountInfo<'info>,
+
+    /// CHECK: SAS schema account from config
+    pub sas_schema: AccountInfo<'info>,
+
+    /// CHECK: SAS authority signer
+    pub sas_authority: Signer<'info>,
+
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
@@ -282,7 +415,28 @@ pub struct UpgradeAtomId<'info> {
     #[account(mut)]
     pub atom_mint: AccountInfo<'info>,
 
+    /// CHECK: Old SAS attestation PDA to be closed
+    #[account(mut)]
+    pub old_sas_attestation: AccountInfo<'info>,
+
+    /// CHECK: New SAS attestation PDA
+    #[account(mut)]
+    pub new_sas_attestation: AccountInfo<'info>,
+
+    /// CHECK: SAS credential account from config
+    pub sas_credential: AccountInfo<'info>,
+
+    /// CHECK: SAS schema account from config
+    pub sas_schema: AccountInfo<'info>,
+
+    /// CHECK: SAS authority signer
+    pub sas_authority: Signer<'info>,
+
+    /// CHECK: SAS event authority PDA
+    pub sas_event_authority: AccountInfo<'info>,
+
     pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -332,6 +486,9 @@ pub struct AtomConfig {
     #[max_len(10)]
     pub rank_thresholds: Vec<u64>,
     pub burn_mint: Pubkey,
+    pub sas_credential: Pubkey,
+    pub sas_schema: Pubkey,
+    pub sas_authority: Pubkey,
     pub bump: u8,
 }
 
@@ -386,4 +543,10 @@ pub enum ErrorCode {
     TooManyRankThresholds,
     #[msg("Rank thresholds must be sorted in ascending order")]
     RankThresholdsNotSorted,
+    #[msg("Invalid SAS credential address")]
+    InvalidSasCredential,
+    #[msg("Invalid SAS schema address")]
+    InvalidSasSchema,
+    #[msg("Invalid SAS authority")]
+    InvalidSasAuthority,
 }
