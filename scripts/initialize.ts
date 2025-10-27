@@ -5,7 +5,8 @@ import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as fs from "fs";
 
 async function main() {
-  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  // const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
   const walletPath = process.env.HOME + "/.config/solana/id.json";
   const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
