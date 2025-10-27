@@ -75,8 +75,33 @@ async function main() {
 
   console.log("\n🚀 Sending initialize transaction...");
 
+  // ==========================================
+  // SAS SETUP REQUIRED BEFORE RUNNING THIS!
+  // ==========================================
+  // You must first create:
+  // 1. SAS Credential (using createCredential instruction)
+  // 2. SAS Schema (using createSchema instruction)
+  // See SAS_INTEGRATION.md for detailed setup instructions
+
+  // Replace these with your actual SAS account addresses after setup
+  const sasCredential = new PublicKey("YOUR_SAS_CREDENTIAL_PDA_HERE");
+  const sasSchema = new PublicKey("YOUR_SAS_SCHEMA_PDA_HERE");
+  const sasAuthority = keypair.publicKey; // Or use a dedicated signer keypair
+
+  console.log("\n🔗 SAS Integration:");
+  console.log("  SAS Credential:", sasCredential.toString());
+  console.log("  SAS Schema:", sasSchema.toString());
+  console.log("  SAS Authority:", sasAuthority.toString());
+
   const tx = await program.methods
-    .initialize(minCreateBurn, rankThresholds, burnMint)
+    .initialize(
+      minCreateBurn,
+      rankThresholds,
+      burnMint,
+      sasCredential,
+      sasSchema,
+      sasAuthority
+    )
     .rpc();
 
   console.log("\n✅ AtomID Protocol Initialized!");
@@ -90,8 +115,11 @@ async function main() {
   console.log("  Admin:", config.admin.toString());
   console.log("  Min Create Burn:", config.minCreateBurn.toString());
   console.log("  Burn Mint:", config.burnMint.toString());
+  console.log("  SAS Credential:", config.sasCredential.toString());
+  console.log("  SAS Schema:", config.sasSchema.toString());
+  console.log("  SAS Authority:", config.sasAuthority.toString());
   console.log("  Rank Thresholds:", config.rankThresholds.map(t => t.toString()));
-  console.log("\n🔥 Protocol is ready! Users can now burn $ATOM to create AtomIDs.");
+  console.log("\n🔥 Protocol is ready! Users can now burn $ATOM to create AtomIDs with SAS attestations!");
 }
 
 main()
