@@ -1,25 +1,14 @@
-import {
-  Connection,
-  Keypair,
-  PublicKey,
-  sendAndConfirmTransaction,
-} from "@solana/web3.js";
+import * as anchor from "@coral-xyz/anchor";
+import { Program, BN, Wallet } from "@coral-xyz/anchor";
+import { AtomId } from "../target/types/atom_id";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as fs from "fs";
-import {
-  deriveCredentialPda,
-  deriveSchemaPda,
-  getCreateCredentialInstruction,
-  getCreateSchemaInstruction,
-} from "sas-lib";
-import { address, generateKeyPairSigner, createSolanaRpc, createSolanaRpcSubscriptions, createKeyPairSignerFromBytes } from "@solana/kit";
+
+const SAS_PROGRAM_ID = new PublicKey("22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG");
 
 async function main() {
-  // Connect to devnet
   const connection = new Connection("https://api.devnet.solana.com", "confirmed");
-  const rpc = createSolanaRpc("https://api.devnet.solana.com");
-  const rpcSubscriptions = createSolanaRpcSubscriptions("wss://api.devnet.solana.com");
 
-  // Load wallet
   const possiblePaths = [
     process.env.SOLANA_KEYPAIR_PATH,
     "/home/neo/.config/solana/id.json",
@@ -27,35 +16,40 @@ async function main() {
   ].filter(Boolean) as string[];
 
   let keypairData: number[] | null = null;
-  let walletPath: string = "";
 
   for (const path of possiblePaths) {
     try {
       if (fs.existsSync(path)) {
         keypairData = JSON.parse(fs.readFileSync(path, "utf-8"));
-        walletPath = path;
         break;
       }
     } catch (error) {
-      // Try next path
+      continue;
     }
   }
 
   if (!keypairData) {
     console.error("❌ Could not find Solana keypair. Tried:");
     possiblePaths.forEach((p) => console.error(`  - ${p}`));
-    console.error("\nSet SOLANA_KEYPAIR_PATH environment variable or ensure keypair exists");
     process.exit(1);
   }
 
   const keypair = Keypair.fromSecretKey(new Uint8Array(keypairData));
-  const authority = await createKeyPairSignerFromBytes(new Uint8Array(keypairData));
+  const wallet = new Wallet(keypair);
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: "confirmed",
+  });
+  anchor.setProvider(provider);
+
+  const programId = new PublicKey("9SxJ9Xq5UmJzPLJZz1rhQm6HeDkEqEbjAyacbr9NJ74G");
+  const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
+  const program = new Program(idl, provider) as Program<AtomId>;
 
   console.log("🔗 Setting up Solana Attestation Service for AtomID");
   console.log("Network: Devnet");
   console.log("Authority:", keypair.publicKey.toString());
+  console.log("Program ID:", programId.toString());
 
-  // Check balance
   const balance = await connection.getBalance(keypair.publicKey);
   console.log("Balance:", balance / 1e9, "SOL");
 
@@ -67,77 +61,64 @@ async function main() {
 
   console.log("");
 
+  // Derive SAS Authority PDA (owned by AtomID program)
+  const [sasAuthorityPda, sasAuthorityBump] = PublicKey.findProgramAddressSync(
+    [Buffer.from("sas_authority")],
+    programId
+  );
+
+  console.log("SAS Authority PDA:", sasAuthorityPda.toString());
+  console.log("");
+
   // ========================================
-  // Step 1: Create Credential
+  // Step 1: Create Credential via AtomID program
   // ========================================
-  console.log("📝 Step 1: Creating SAS Credential...");
+  console.log("📝 Step 1: Creating SAS Credential via AtomID program...");
 
-  const credentialName = "AtomID";
-  const [credentialPda] = await deriveCredentialPda({
-    authority: address(keypair.publicKey.toString()),
-    name: credentialName,
-  });
+  const credentialName = "AtomID_11";
 
-  console.log("Credential PDA:", credentialPda);
+  // Derive credential PDA using SAS program's derivation
+  const [credentialPda] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("credential"),
+      sasAuthorityPda.toBuffer(),
+      Buffer.from(credentialName),
+    ],
+    SAS_PROGRAM_ID
+  );
 
-  // Check if credential already exists
+  console.log("Credential PDA:", credentialPda.toString());
+
   let credentialExists = false;
   try {
-    const credentialAccount = await connection.getAccountInfo(new PublicKey(credentialPda));
+    const credentialAccount = await connection.getAccountInfo(credentialPda);
     if (credentialAccount) {
       console.log("✅ Credential already exists!");
       credentialExists = true;
     }
   } catch (error) {
-    // Doesn't exist, we'll create it
+    // Doesn't exist
   }
 
   if (!credentialExists) {
-    console.log("Creating credential...");
-
-    // Generate an authorized signer (can be the authority itself)
-    const authorizedSigner = await generateKeyPairSigner();
-
-    const createCredentialIx = getCreateCredentialInstruction({
-      payer: authority,
-      credential: credentialPda,
-      authority,
-      name: credentialName,
-      signers: [authorizedSigner.address],
-    });
+    console.log("Creating credential through AtomID program...");
 
     try {
-      // Convert to legacy transaction format
-      const { blockhash } = await connection.getLatestBlockhash();
-      const legacyTx = {
-        feePayer: keypair.publicKey,
-        blockhash,
-        lastValidBlockHeight: (await connection.getBlockHeight()) + 150,
-        instructions: [
-          {
-            programId: new PublicKey(createCredentialIx.programAddress),
-            keys: createCredentialIx.accounts.map((acc) => ({
-              pubkey: new PublicKey(acc.address),
-              isSigner: acc.role === 2 || acc.role === 3, // Signer roles
-              isWritable: acc.role === 1 || acc.role === 3, // Writable roles
-            })),
-            data: Buffer.from(createCredentialIx.data),
-          },
-        ],
-      };
-
-      const transaction = new (require("@solana/web3.js").Transaction)();
-      transaction.feePayer = legacyTx.feePayer;
-      transaction.recentBlockhash = legacyTx.blockhash;
-      transaction.add(legacyTx.instructions[0]);
-
-      const sig = await sendAndConfirmTransaction(connection, transaction, [keypair], {
-        commitment: "confirmed",
-      });
+      const tx = await program.methods
+        .initializeSasCredential(
+          credentialName,
+          "AtomID issuer credential for rank attestations"
+        )
+        .accounts({
+          payer: keypair.publicKey,
+          sasCredential: credentialPda,
+          sasProgram: SAS_PROGRAM_ID,
+        })
+        .rpc();
 
       console.log("✅ Credential created!");
-      console.log("Transaction:", sig);
-      console.log(`View: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+      console.log("Transaction:", tx);
+      console.log(`View: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
     } catch (error) {
       console.error("❌ Failed to create credential:", error);
       throw error;
@@ -147,86 +128,67 @@ async function main() {
   console.log("");
 
   // ========================================
-  // Step 2: Create Schema
+  // Step 2: Create Schema via AtomID program
   // ========================================
-  console.log("📝 Step 2: Creating AtomID Rank Schema...");
+  console.log("📝 Step 2: Creating AtomID Rank Schema via AtomID program...");
 
-  const schemaName = "atomid_rank_v1";
+  const schemaName = "atomid_rank_11";
+
+  // Derive schema PDA using SAS program's derivation
   const schemaVersion = 1;
-  const [schemaPda] = await deriveSchemaPda({
-    credential: credentialPda,
-    name: schemaName,
-    version: schemaVersion,
-  });
+  const [schemaPda] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("schema"),
+      credentialPda.toBuffer(),
+      Buffer.from(schemaName),
+      Buffer.from([schemaVersion]), // version as u8 (1 byte)
+    ],
+    SAS_PROGRAM_ID
+  );
 
-  console.log("Schema PDA:", schemaPda);
+  console.log("Schema PDA:", schemaPda.toString());
   console.log("Schema Name:", schemaName);
 
-  // Check if schema already exists
   let schemaExists = false;
   try {
-    const schemaAccount = await connection.getAccountInfo(new PublicKey(schemaPda));
+    const schemaAccount = await connection.getAccountInfo(schemaPda);
     if (schemaAccount) {
       console.log("✅ Schema already exists!");
       schemaExists = true;
     }
   } catch (error) {
-    // Doesn't exist, we'll create it
+    // Doesn't exist
   }
 
   if (!schemaExists) {
-    console.log("Creating schema...");
+    console.log("Creating schema through AtomID program...");
 
     const schemaDescription = "AtomID rank attestation - Proof of ATOM burned and trust level";
-    const layout = [0, 3, 3]; // [U8, U64, U64]
+    const layout = Buffer.from([0, 3, 3]); // [U8, U64, U64]
     const fieldNames = ["rank", "total_burned", "created_at_slot"];
 
     console.log("Layout:", layout, "(U8, U64, U64)");
     console.log("Fields:", fieldNames);
 
-    const createSchemaIx = getCreateSchemaInstruction({
-      payer: authority,
-      authority,
-      credential: credentialPda,
-      schema: schemaPda,
-      name: schemaName,
-      description: schemaDescription,
-      layout: new Uint8Array(layout),
-      fieldNames,
-    });
-
     try {
-      // Convert to legacy transaction format
-      const { blockhash } = await connection.getLatestBlockhash();
-      const legacyTx = {
-        feePayer: keypair.publicKey,
-        blockhash,
-        lastValidBlockHeight: (await connection.getBlockHeight()) + 150,
-        instructions: [
-          {
-            programId: new PublicKey(createSchemaIx.programAddress),
-            keys: createSchemaIx.accounts.map((acc) => ({
-              pubkey: new PublicKey(acc.address),
-              isSigner: acc.role === 2 || acc.role === 3,
-              isWritable: acc.role === 1 || acc.role === 3,
-            })),
-            data: Buffer.from(createSchemaIx.data),
-          },
-        ],
-      };
-
-      const transaction = new (require("@solana/web3.js").Transaction)();
-      transaction.feePayer = legacyTx.feePayer;
-      transaction.recentBlockhash = legacyTx.blockhash;
-      transaction.add(legacyTx.instructions[0]);
-
-      const sig = await sendAndConfirmTransaction(connection, transaction, [keypair], {
-        commitment: "confirmed",
-      });
+      const tx = await program.methods
+        .initializeSasSchema(
+          schemaName,
+          schemaDescription,
+          layout,
+          fieldNames
+        )
+        .accounts({
+          payer: keypair.publicKey,
+          sasCredential: credentialPda,
+          sasSchema: schemaPda,
+          sasProgram: SAS_PROGRAM_ID,
+        })
+        .rpc();
 
       console.log("✅ Schema created!");
-      console.log("Transaction:", sig);
-      console.log(`View: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+      console.log("Transaction:", tx);
+      console.log(`View: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
     } catch (error) {
       console.error("❌ Failed to create schema:", error);
       throw error;
@@ -246,7 +208,12 @@ async function main() {
   console.log("───────────────────────────────────────────────────────");
   console.log(`const sasCredential = new PublicKey("${credentialPda}");`);
   console.log(`const sasSchema = new PublicKey("${schemaPda}");`);
-  console.log(`const sasAuthority = keypair.publicKey; // ${keypair.publicKey.toString()}`);
+  console.log(`const sasAuthority = new PublicKey("${sasAuthorityPda}"); // PDA owned by AtomID program`);
+  console.log("");
+  console.log("📋 Also update src/lib/constants.ts in the frontend:");
+  console.log("───────────────────────────────────────────────────────");
+  console.log(`sasCredential: '${credentialPda}',`);
+  console.log(`sasSchema: '${schemaPda}',`);
   console.log("");
   console.log("✅ Next step: Update initialize.ts and run it!");
   console.log("");

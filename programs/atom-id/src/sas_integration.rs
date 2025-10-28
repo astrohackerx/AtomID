@@ -1,6 +1,9 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program;
 use solana_attestation_service_client::instructions::{
     CreateAttestation, CreateAttestationInstructionArgs, CloseAttestation,
+    CreateCredential, CreateCredentialInstructionArgs,
+    CreateSchema, CreateSchemaInstructionArgs,
 };
 
 pub const SAS_PROGRAM_ID: Pubkey = solana_program::pubkey!("22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG");
@@ -77,4 +80,57 @@ pub fn close_attestation_instruction(
     };
 
     Ok(instruction_struct.instruction())
+}
+
+pub fn create_credential_instruction(
+    payer: Pubkey,
+    authority: Pubkey,
+    credential: Pubkey,
+    system_program: Pubkey,
+    name: String,
+    _description: String,
+    authorized_signers: Vec<Pubkey>,
+) -> Result<solana_program::instruction::Instruction> {
+    let args = CreateCredentialInstructionArgs {
+        name,
+        signers: authorized_signers.into_iter().map(|pk| solana_program::pubkey::Pubkey::from(pk.to_bytes())).collect(),
+    };
+
+    let instruction_struct = CreateCredential {
+        payer: solana_program::pubkey::Pubkey::from(payer.to_bytes()),
+        authority: solana_program::pubkey::Pubkey::from(authority.to_bytes()),
+        credential: solana_program::pubkey::Pubkey::from(credential.to_bytes()),
+        system_program: solana_program::pubkey::Pubkey::from(system_program.to_bytes()),
+    };
+
+    Ok(instruction_struct.instruction(args))
+}
+
+pub fn create_schema_instruction(
+    payer: Pubkey,
+    authority: Pubkey,
+    credential: Pubkey,
+    schema: Pubkey,
+    system_program: Pubkey,
+    name: String,
+    description: String,
+    layout: Vec<u8>,
+    field_names: Vec<String>,
+) -> Result<solana_program::instruction::Instruction> {
+    let args = CreateSchemaInstructionArgs {
+        name,
+        description,
+        layout,
+        field_names,
+    };
+
+    let instruction_struct = CreateSchema {
+        payer: solana_program::pubkey::Pubkey::from(payer.to_bytes()),
+        authority: solana_program::pubkey::Pubkey::from(authority.to_bytes()),
+        credential: solana_program::pubkey::Pubkey::from(credential.to_bytes()),
+        schema: solana_program::pubkey::Pubkey::from(schema.to_bytes()),
+        system_program: solana_program::pubkey::Pubkey::from(system_program.to_bytes()),
+    };
+
+    Ok(instruction_struct.instruction(args))
 }

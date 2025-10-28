@@ -17,7 +17,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("FYZF86EwAZwNevSsFWswxzcx5VvRyQRHdB2GPcosyMLE");
+  const programId = new PublicKey("9SxJ9Xq5UmJzPLJZz1rhQm6HeDkEqEbjAyacbr9NJ74G");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
@@ -76,22 +76,16 @@ async function main() {
   console.log("\n🚀 Sending initialize transaction...");
 
   // ==========================================
-  // SAS SETUP REQUIRED BEFORE RUNNING THIS!
+  // IMPORTANT: Update these values after running setup-sas.ts
   // ==========================================
-  // You must first create:
-  // 1. SAS Credential (using createCredential instruction)
-  // 2. SAS Schema (using createSchema instruction)
-  // See SAS_INTEGRATION.md for detailed setup instructions
-
-  // Replace these with your actual SAS account addresses after setup
-  const sasCredential = new PublicKey("3Ltzb5JxsZThRmz4gkUYDFYP82pYv2xUYjuJfM4TYcGS");
-  const sasSchema = new PublicKey("6WnKt5fKak5xRYS2X1Pc4DGxtHLErG7JwboL5nFBXcQD");
-  const sasAuthority = keypair.publicKey; // Or use a dedicated signer keypair
+  const sasCredential = new PublicKey("G7chjpomGqMrYsc7SCyus82rNAtLwbEUaD2dWeTH7aHx");
+  const sasSchema = new PublicKey("FrpGbaQEWhKrnLh7NYyZS8jCDo2P6D8Fb6xBZGzMuMHB");
+  const sasAuthority = new PublicKey("AMxrVezCMnTJ2UgcUTVoW4qKMAxQwaGgYj3v32LCeMVp");
 
   console.log("\n🔗 SAS Integration:");
   console.log("  SAS Credential:", sasCredential.toString());
   console.log("  SAS Schema:", sasSchema.toString());
-  console.log("  SAS Authority:", sasAuthority.toString());
+  console.log("  SAS Authority (PDA):", sasAuthority.toString());
 
   const tx = await program.methods
     .initialize(
