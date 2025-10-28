@@ -4,7 +4,7 @@ use anchor_spl::token::{self, Burn, Token};
 mod sas_integration;
 use sas_integration::*;
 
-declare_id!("FYZF86EwAZwNevSsFWswxzcx5VvRyQRHdB2GPcosyMLE");
+declare_id!("9SxJ9Xq5UmJzPLJZz1rhQm6HeDkEqEbjAyacbr9NJ74G");
 
 #[program]
 pub mod atom_id {
@@ -46,6 +46,79 @@ pub mod atom_id {
             min_create_burn,
             burn_mint,
         });
+
+        Ok(())
+    }
+
+    pub fn initialize_sas_credential(
+        ctx: Context<InitializeSasCredential>,
+        name: String,
+        description: String,
+    ) -> Result<()> {
+        let credential_ix = create_credential_instruction(
+            ctx.accounts.payer.key(),
+            ctx.accounts.sas_authority.key(),
+            ctx.accounts.sas_credential.key(),
+            ctx.accounts.system_program.key(),
+            name,
+            description,
+            vec![ctx.accounts.sas_authority.key()],
+        )?;
+
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            b"sas_authority",
+            &[ctx.bumps.sas_authority],
+        ]];
+
+        anchor_lang::solana_program::program::invoke_signed(
+            &credential_ix,
+            &[
+                ctx.accounts.payer.to_account_info(),
+                ctx.accounts.sas_authority.to_account_info(),
+                ctx.accounts.sas_credential.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+            signer_seeds,
+        )?;
+
+        Ok(())
+    }
+
+    pub fn initialize_sas_schema(
+        ctx: Context<InitializeSasSchema>,
+        name: String,
+        description: String,
+        layout: Vec<u8>,
+        field_names: Vec<String>,
+    ) -> Result<()> {
+        let schema_ix = create_schema_instruction(
+            ctx.accounts.payer.key(),
+            ctx.accounts.sas_authority.key(),
+            ctx.accounts.sas_credential.key(),
+            ctx.accounts.sas_schema.key(),
+            ctx.accounts.system_program.key(),
+            name,
+            description,
+            layout,
+            field_names,
+        )?;
+
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            b"sas_authority",
+            &[ctx.bumps.sas_authority],
+        ]];
+
+        anchor_lang::solana_program::program::invoke_signed(
+            &schema_ix,
+            &[
+                ctx.accounts.payer.to_account_info(),
+                ctx.accounts.sas_authority.to_account_info(),
+                ctx.accounts.sas_credential.to_account_info(),
+                ctx.accounts.sas_schema.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+            signer_seeds,
+        )?;
 
         Ok(())
     }
@@ -120,6 +193,11 @@ pub mod atom_id {
             atom_id.created_at_slot,
         );
 
+        msg!("Attestation data length: {}", attestation_data.len());
+        msg!("Attestation data: {:?}", attestation_data);
+
+        let expiry_timestamp = Clock::get()?.unix_timestamp + (365 * 24 * 60 * 60);
+
         let attestation_ix = create_attestation_instruction(
             ctx.accounts.user.key(),
             ctx.accounts.sas_authority.key(),
@@ -129,19 +207,27 @@ pub mod atom_id {
             ctx.accounts.system_program.key(),
             ctx.accounts.user.key(),
             attestation_data,
-            -1,
+            expiry_timestamp,
         )?;
 
-        anchor_lang::solana_program::program::invoke(
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            b"sas_authority",
+            &[ctx.bumps.sas_authority],
+        ]];
+
+        let account_infos = [
+            ctx.accounts.user.to_account_info(),
+            ctx.accounts.sas_authority.to_account_info(),
+            ctx.accounts.sas_credential.to_account_info(),
+            ctx.accounts.sas_schema.to_account_info(),
+            ctx.accounts.sas_attestation.to_account_info(),
+            ctx.accounts.system_program.to_account_info(),
+        ];
+
+        anchor_lang::solana_program::program::invoke_signed(
             &attestation_ix,
-            &[
-                ctx.accounts.user.to_account_info(),
-                ctx.accounts.sas_authority.to_account_info(),
-                ctx.accounts.sas_credential.to_account_info(),
-                ctx.accounts.sas_schema.to_account_info(),
-                ctx.accounts.sas_attestation.to_account_info(),
-                ctx.accounts.system_program.to_account_info(),
-            ],
+            &account_infos,
+            signer_seeds,
         )?;
 
         emit!(AtomIdCreated {
@@ -200,7 +286,12 @@ pub mod atom_id {
             ctx.accounts.system_program.key(),
         )?;
 
-        anchor_lang::solana_program::program::invoke(
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            b"sas_authority",
+            &[ctx.bumps.sas_authority],
+        ]];
+
+        anchor_lang::solana_program::program::invoke_signed(
             &close_ix,
             &[
                 ctx.accounts.user.to_account_info(),
@@ -210,6 +301,7 @@ pub mod atom_id {
                 ctx.accounts.sas_event_authority.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
             ],
+            signer_seeds,
         )?;
 
         token::burn(
@@ -245,6 +337,8 @@ pub mod atom_id {
             atom_id.created_at_slot,
         );
 
+        let expiry_timestamp = Clock::get()?.unix_timestamp + (365 * 24 * 60 * 60);
+
         let attestation_ix = create_attestation_instruction(
             ctx.accounts.user.key(),
             ctx.accounts.sas_authority.key(),
@@ -254,10 +348,15 @@ pub mod atom_id {
             ctx.accounts.system_program.key(),
             ctx.accounts.user.key(),
             attestation_data,
-            -1,
+            expiry_timestamp,
         )?;
 
-        anchor_lang::solana_program::program::invoke(
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            b"sas_authority",
+            &[ctx.bumps.sas_authority],
+        ]];
+
+        anchor_lang::solana_program::program::invoke_signed(
             &attestation_ix,
             &[
                 ctx.accounts.user.to_account_info(),
@@ -267,6 +366,7 @@ pub mod atom_id {
                 ctx.accounts.new_sas_attestation.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
             ],
+            signer_seeds,
         )?;
 
         emit!(AtomIdUpgraded {
@@ -344,6 +444,53 @@ pub struct Initialize<'info> {
 }
 
 #[derive(Accounts)]
+pub struct InitializeSasCredential<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(
+        seeds = [b"sas_authority"],
+        bump
+    )]
+    /// CHECK: PDA used to sign SAS operations
+    pub sas_authority: UncheckedAccount<'info>,
+
+    /// CHECK: Created by SAS program
+    #[account(mut)]
+    pub sas_credential: UncheckedAccount<'info>,
+
+    /// CHECK: SAS program
+    pub sas_program: UncheckedAccount<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct InitializeSasSchema<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(
+        seeds = [b"sas_authority"],
+        bump
+    )]
+    /// CHECK: PDA used to sign SAS operations
+    pub sas_authority: UncheckedAccount<'info>,
+
+    /// CHECK: Created by SAS program
+    pub sas_credential: UncheckedAccount<'info>,
+
+    /// CHECK: Created by SAS program
+    #[account(mut)]
+    pub sas_schema: UncheckedAccount<'info>,
+
+    pub system_program: Program<'info, System>,
+
+    /// CHECK: SAS program for CPI
+    pub sas_program: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
 pub struct CreateAtomId<'info> {
     #[account(
         init,
@@ -371,9 +518,9 @@ pub struct CreateAtomId<'info> {
     #[account(mut)]
     pub atom_mint: AccountInfo<'info>,
 
-    /// CHECK: SAS attestation PDA
+    /// CHECK: SAS attestation PDA - will be created by SAS program via CPI
     #[account(mut)]
-    pub sas_attestation: AccountInfo<'info>,
+    pub sas_attestation: UncheckedAccount<'info>,
 
     /// CHECK: SAS credential account from config
     pub sas_credential: AccountInfo<'info>,
@@ -381,8 +528,15 @@ pub struct CreateAtomId<'info> {
     /// CHECK: SAS schema account from config
     pub sas_schema: AccountInfo<'info>,
 
-    /// CHECK: SAS authority signer
-    pub sas_authority: Signer<'info>,
+    /// CHECK: SAS authority PDA
+    #[account(
+        seeds = [b"sas_authority"],
+        bump
+    )]
+    pub sas_authority: AccountInfo<'info>,
+
+    /// CHECK: SAS program account
+    pub sas_program: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -415,13 +569,13 @@ pub struct UpgradeAtomId<'info> {
     #[account(mut)]
     pub atom_mint: AccountInfo<'info>,
 
-    /// CHECK: Old SAS attestation PDA to be closed
+    /// CHECK: Old SAS attestation PDA to be closed - owned by SAS program
     #[account(mut)]
-    pub old_sas_attestation: AccountInfo<'info>,
+    pub old_sas_attestation: UncheckedAccount<'info>,
 
-    /// CHECK: New SAS attestation PDA
+    /// CHECK: New SAS attestation PDA - will be created by SAS program via CPI
     #[account(mut)]
-    pub new_sas_attestation: AccountInfo<'info>,
+    pub new_sas_attestation: UncheckedAccount<'info>,
 
     /// CHECK: SAS credential account from config
     pub sas_credential: AccountInfo<'info>,
@@ -429,11 +583,18 @@ pub struct UpgradeAtomId<'info> {
     /// CHECK: SAS schema account from config
     pub sas_schema: AccountInfo<'info>,
 
-    /// CHECK: SAS authority signer
-    pub sas_authority: Signer<'info>,
+    /// CHECK: SAS authority PDA
+    #[account(
+        seeds = [b"sas_authority"],
+        bump
+    )]
+    pub sas_authority: AccountInfo<'info>,
 
     /// CHECK: SAS event authority PDA
     pub sas_event_authority: AccountInfo<'info>,
+
+    /// CHECK: SAS program account
+    pub sas_program: AccountInfo<'info>,
 
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,

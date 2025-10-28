@@ -5,6 +5,7 @@
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
     "initialize": "ts-node ./scripts/initialize.ts",
     "sas": "ts-node ./scripts/setup-sas.ts",
+    "testatomid": "ts-node ./scripts/test-atomid.ts",
     "test": "ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
   },
   "dependencies": {
