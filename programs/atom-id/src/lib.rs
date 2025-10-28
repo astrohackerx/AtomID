@@ -300,6 +300,7 @@ pub mod atom_id {
                 ctx.accounts.old_sas_attestation.to_account_info(),
                 ctx.accounts.sas_event_authority.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
+                ctx.accounts.sas_program.to_account_info(),
             ],
             signer_seeds,
         )?;
