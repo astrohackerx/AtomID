@@ -17,7 +17,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("9SxJ9Xq5UmJzPLJZz1rhQm6HeDkEqEbjAyacbr9NJ74G");
+  const programId = new PublicKey("334fZWRf33wfDSuF1837w4mSQTgTd6r4XjgdLX8TNRjo");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
@@ -78,9 +78,9 @@ async function main() {
   // ==========================================
   // IMPORTANT: Update these values after running setup-sas.ts
   // ==========================================
-  const sasCredential = new PublicKey("G7chjpomGqMrYsc7SCyus82rNAtLwbEUaD2dWeTH7aHx");
-  const sasSchema = new PublicKey("FrpGbaQEWhKrnLh7NYyZS8jCDo2P6D8Fb6xBZGzMuMHB");
-  const sasAuthority = new PublicKey("AMxrVezCMnTJ2UgcUTVoW4qKMAxQwaGgYj3v32LCeMVp");
+  const sasCredential = new PublicKey("5Ldy7HgzHqmQvX6xQJShzzinmM6yj7bQWLSzAAbUE4Nr");
+  const sasSchema = new PublicKey("833nW63cXf3q14uz1otraFknAeMAfw8yFwEPGmAhG8xA");
+  const sasAuthority = new PublicKey("8YUtFGXQqUzvbzZMSLZckqfhk5uEaNXLTSbsmWaLmtqF");
 
   console.log("\n🔗 SAS Integration:");
   console.log("  SAS Credential:", sasCredential.toString());

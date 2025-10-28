@@ -41,7 +41,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("9SxJ9Xq5UmJzPLJZz1rhQm6HeDkEqEbjAyacbr9NJ74G");
+  const programId = new PublicKey("334fZWRf33wfDSuF1837w4mSQTgTd6r4XjgdLX8TNRjo");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
@@ -75,7 +75,7 @@ async function main() {
   // ========================================
   console.log("📝 Step 1: Creating SAS Credential via AtomID program...");
 
-  const credentialName = "AtomID_11";
+  const credentialName = "AtomID_21";
 
   // Derive credential PDA using SAS program's derivation
   const [credentialPda] = PublicKey.findProgramAddressSync(
@@ -132,7 +132,7 @@ async function main() {
   // ========================================
   console.log("📝 Step 2: Creating AtomID Rank Schema via AtomID program...");
 
-  const schemaName = "atomid_rank_11";
+  const schemaName = "atomid_rank_21";
 
   // Derive schema PDA using SAS program's derivation
   const schemaVersion = 1;
