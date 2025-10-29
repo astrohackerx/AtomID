@@ -57,43 +57,22 @@ async function main() {
   console.log("╚═══════════════════════════════════════════════════════════════╝\n");
 
   // Setup connection and wallet
-  const connection = new Connection("https://api.devnet.solana.com", "confirmed");
-
-  const possiblePaths = [
-    process.env.SOLANA_KEYPAIR_PATH,
-    "/home/neo/.config/solana/id.json",
-    (process.env.HOME || "/root") + "/.config/solana/id.json",
-  ].filter(Boolean) as string[];
-
-  let keypairData: number[] | null = null;
-  for (const path of possiblePaths) {
-    try {
-      if (fs.existsSync(path)) {
-        keypairData = JSON.parse(fs.readFileSync(path, "utf-8"));
-        break;
-      }
-    } catch (error) {
-      continue;
-    }
-  }
-
-  if (!keypairData) {
-    console.error("❌ Could not find Solana keypair");
-    process.exit(1);
-  }
-
+  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  const walletPath = process.env.HOME + "/.config/solana/id.json";
+  const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
   const payer = Keypair.fromSecretKey(new Uint8Array(keypairData));
+
   const wallet = new Wallet(payer);
   const provider = new anchor.AnchorProvider(connection, wallet, {
     commitment: "confirmed",
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("334fZWRf33wfDSuF1837w4mSQTgTd6r4XjgdLX8TNRjo");
+  const programId = new PublicKey("2L71ccPAUz8NtKtHMUZtaopoS3CTnJSgaxatfHoGDvwM");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program: any = new Program(idl, provider);
 
-  const burnMint = new PublicKey("DEmAM5nQE5fpAwu3xotx5N19FG6GiDt3e3o6ysDYmaqT");
+  const burnMint = new PublicKey("6KeQaJXFHczWKjrcXdMGKP773JKQmMWDXy4446adpump");
   const sasCredential = new PublicKey("5Ldy7HgzHqmQvX6xQJShzzinmM6yj7bQWLSzAAbUE4Nr");
   const sasSchema = new PublicKey("833nW63cXf3q14uz1otraFknAeMAfw8yFwEPGmAhG8xA");
 

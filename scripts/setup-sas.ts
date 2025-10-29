@@ -7,57 +7,28 @@ import * as fs from "fs";
 const SAS_PROGRAM_ID = new PublicKey("22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG");
 
 async function main() {
-  const connection = new Connection("https://api.devnet.solana.com", "confirmed");
-
-  const possiblePaths = [
-    process.env.SOLANA_KEYPAIR_PATH,
-    "/home/neo/.config/solana/id.json",
-    (process.env.HOME || "/root") + "/.config/solana/id.json",
-  ].filter(Boolean) as string[];
-
-  let keypairData: number[] | null = null;
-
-  for (const path of possiblePaths) {
-    try {
-      if (fs.existsSync(path)) {
-        keypairData = JSON.parse(fs.readFileSync(path, "utf-8"));
-        break;
-      }
-    } catch (error) {
-      continue;
-    }
-  }
-
-  if (!keypairData) {
-    console.error("❌ Could not find Solana keypair. Tried:");
-    possiblePaths.forEach((p) => console.error(`  - ${p}`));
-    process.exit(1);
-  }
-
+  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  const walletPath = process.env.HOME + "/.config/solana/id.json";
+  const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
   const keypair = Keypair.fromSecretKey(new Uint8Array(keypairData));
+
   const wallet = new Wallet(keypair);
   const provider = new anchor.AnchorProvider(connection, wallet, {
     commitment: "confirmed",
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("334fZWRf33wfDSuF1837w4mSQTgTd6r4XjgdLX8TNRjo");
+  const programId = new PublicKey("2L71ccPAUz8NtKtHMUZtaopoS3CTnJSgaxatfHoGDvwM");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program = new Program(idl, provider) as Program<AtomId>;
 
   console.log("🔗 Setting up Solana Attestation Service for AtomID");
-  console.log("Network: Devnet");
+  console.log("Network: Mainnet");
   console.log("Authority:", keypair.publicKey.toString());
   console.log("Program ID:", programId.toString());
 
   const balance = await connection.getBalance(keypair.publicKey);
   console.log("Balance:", balance / 1e9, "SOL");
-
-  if (balance < 0.1e9) {
-    console.log("\n⚠️  Low balance! Get devnet SOL from:");
-    console.log("https://faucet.solana.com/");
-    return;
-  }
 
   console.log("");
 
@@ -75,7 +46,7 @@ async function main() {
   // ========================================
   console.log("📝 Step 1: Creating SAS Credential via AtomID program...");
 
-  const credentialName = "AtomID_21";
+  const credentialName = "AtomID_v1";
 
   // Derive credential PDA using SAS program's derivation
   const [credentialPda] = PublicKey.findProgramAddressSync(
@@ -118,7 +89,7 @@ async function main() {
 
       console.log("✅ Credential created!");
       console.log("Transaction:", tx);
-      console.log(`View: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
+      console.log(`View: https://explorer.solana.com/tx/${tx}`);
     } catch (error) {
       console.error("❌ Failed to create credential:", error);
       throw error;
@@ -132,7 +103,7 @@ async function main() {
   // ========================================
   console.log("📝 Step 2: Creating AtomID Rank Schema via AtomID program...");
 
-  const schemaName = "atomid_rank_21";
+  const schemaName = "atomid_rank_v1";
 
   // Derive schema PDA using SAS program's derivation
   const schemaVersion = 1;
@@ -188,7 +159,7 @@ async function main() {
 
       console.log("✅ Schema created!");
       console.log("Transaction:", tx);
-      console.log(`View: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
+      console.log(`View: https://explorer.solana.com/tx/${tx}`);
     } catch (error) {
       console.error("❌ Failed to create schema:", error);
       throw error;
