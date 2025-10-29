@@ -1,0 +1,29 @@
+# Security Policy for AtomID Protocol
+
+# Project Information
+name: "AtomID Protocol"
+project_url: "https://github.com/astrohackerx/AtomID"
+contacts: "email:astrohackerx@protonmail.com"
+policy: "https://github.com/astrohackerx/AtomID/blob/main/SECURITY.md"
+
+# Preferred Languages
+preferred_languages: "en"
+
+# Source Code
+source_code: "https://github.com/astrohackerx/AtomID"
+source_release: "v1.0.0"
+source_revision: "GIT_COMMIT_HASH"
+
+# Audits
+audits: "None"
+
+# Bug Bounty
+# If you have a bug bounty program, add it here
+# bug_bounty: "https://lostatom.org"
+
+# Acknowledgements
+acknowledgements: "https://github.com/astrohackerx/AtomID/blob/main/SECURITY.md"
+
+# Additional Information
+# This program implements a verifiable on-chain identity system
+# based on $ATOM token burns and SAS attestations.

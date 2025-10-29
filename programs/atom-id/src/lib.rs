@@ -425,7 +425,17 @@ pub mod atom_id {
 
         Ok(())
     }
+
+    /// Print security.txt to program logs for verification
+    pub fn print_security_txt(_ctx: Context<PrintSecurityTxt>) -> Result<()> {
+        let security_txt = include_str!("security.txt");
+        msg!("security_txt: {}", security_txt);
+        Ok(())
+    }
 }
+
+#[derive(Accounts)]
+pub struct PrintSecurityTxt {}
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
