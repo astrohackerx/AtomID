@@ -11,8 +11,8 @@ preferred_languages: "en"
 
 # Source Code
 source_code: "https://github.com/astrohackerx/AtomID"
-source_release: "v1.0.0"
-source_revision: "GIT_COMMIT_HASH"
+source_release: "v2.0.0"
+source_revision: "5dbc11c13a65772e04671086f14e9e49ed43f07e"
 
 # Audits
 audits: "None"
