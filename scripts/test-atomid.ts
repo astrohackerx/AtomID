@@ -68,7 +68,7 @@ async function main() {
   });
   anchor.setProvider(provider);
 
-  const programId = new PublicKey("2L71ccPAUz8NtKtHMUZtaopoS3CTnJSgaxatfHoGDvwM");
+  const programId = new PublicKey("rnc2fycemiEgj4YbMSuwKFpdV6nkJonojCXib3j2by6");
   const idl = JSON.parse(fs.readFileSync("./target/idl/atom_id.json", "utf-8"));
   const program: any = new Program(idl, provider);
 

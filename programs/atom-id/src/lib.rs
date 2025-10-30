@@ -4,7 +4,7 @@ use anchor_spl::token::{self, Burn, Token};
 mod sas_integration;
 use sas_integration::*;
 
-declare_id!("2L71ccPAUz8NtKtHMUZtaopoS3CTnJSgaxatfHoGDvwM");
+declare_id!("rnc2fycemiEgj4YbMSuwKFpdV6nkJonojCXib3j2by6");
 
 #[program]
 pub mod atom_id {
