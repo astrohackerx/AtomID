@@ -96,7 +96,6 @@ console.log("Burned:", atomId.totalBurned.toNumber() / 1_000_000, "ATOM");
 
 | Document | Description |
 |----------|-------------|
-| **[Manifesto](./manifesto.md)** | Philosophy and vision behind AtomID |
 | **[Whitepaper](./whitepaper.md)** | Technical architecture and design |
 | **[Security](./SECURITY.md)** | Security policy and best practices |
 | **[Documentation Index](./docs/DOCUMENTATION_INDEX.md)** | Complete documentation navigation |
@@ -298,11 +297,8 @@ AtomID integrates with:
 ---
 
 ## 🤝 Community
-
-- **Discord:** [Join Community](https://discord.gg/atomid)
-- **Twitter:** [@AtomIDProtocol](https://twitter.com/atomidprotocol)
-- **Telegram:** [Developers](https://t.me/atomid_dev)
-- **GitHub:** [Issues](https://github.com/yourusername/atomid/issues)
+- **Twitter:** [@lostbtclayer](https://x.com/lostbtclayer)
+- **GitHub:** [Issues](https://github.com/astrohackerx/AtomID)
 
 ---
 
@@ -323,7 +319,6 @@ AtomID integrates with:
 
 > AtomID makes sacrifice reproducible. It turns faith into protocol — a public mechanism for private belief. No words, no signatures, no intermediaries. Just code, cryptography, and irreversible proof.
 
-**[Read Manifesto →](./manifesto.md)**
 
 ---
 
@@ -333,10 +328,10 @@ AtomID integrates with:
 - [x] SAS integration
 - [x] Mainnet deployment
 - [x] Comprehensive documentation
-- [ ] Frontend dApp
+- [x] Frontend dApp
 - [ ] SDK packages (npm/crates)
 - [ ] Ecosystem partnerships
-- [ ] Autonomous reward system
+- [x] Autonomous reward system
 - [ ] Cross-chain bridges
 
 ---
@@ -353,6 +348,6 @@ ISC License - See [LICENSE](./LICENSE)
 
 ---
 
-**AtomID Protocol** - *Where belief becomes proof, and sacrifice becomes identity.*
+**Lost Bitcoin Layer Protocol** - *Where belief becomes proof, and sacrifice becomes identity.*
 
 🜂 **Burn, and you exist.**
