@@ -1,0 +1,911 @@
+{
+  "address": "rnc2fycemiEgj4YbMSuwKFpdV6nkJonojCXib3j2by6",
+  "metadata": {
+    "name": "atom_id",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "admin_update_config",
+      "discriminator": [
+        224,
+        243,
+        100,
+        135,
+        120,
+        165,
+        43,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "atom_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "min_create_burn",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "rank_thresholds",
+          "type": {
+            "option": {
+              "vec": "u64"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_atomid",
+      "discriminator": [
+        6,
+        72,
+        217,
+        114,
+        167,
+        149,
+        162,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "atom_id",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "atom_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "atom_mint",
+          "writable": true
+        },
+        {
+          "name": "sas_attestation",
+          "writable": true
+        },
+        {
+          "name": "sas_credential"
+        },
+        {
+          "name": "sas_schema"
+        },
+        {
+          "name": "sas_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  115,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sas_program"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "burn_amount",
+          "type": "u64"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "atom_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_create_burn",
+          "type": "u64"
+        },
+        {
+          "name": "rank_thresholds",
+          "type": {
+            "vec": "u64"
+          }
+        },
+        {
+          "name": "burn_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "sas_credential",
+          "type": "pubkey"
+        },
+        {
+          "name": "sas_schema",
+          "type": "pubkey"
+        },
+        {
+          "name": "sas_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "initialize_sas_credential",
+      "discriminator": [
+        116,
+        218,
+        246,
+        75,
+        80,
+        42,
+        213,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sas_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  115,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sas_credential",
+          "writable": true
+        },
+        {
+          "name": "sas_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize_sas_schema",
+      "discriminator": [
+        89,
+        249,
+        169,
+        90,
+        190,
+        217,
+        35,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sas_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  115,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sas_credential"
+        },
+        {
+          "name": "sas_schema",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "sas_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "layout",
+          "type": "bytes"
+        },
+        {
+          "name": "field_names",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "print_security_txt",
+      "docs": [
+        "Print security.txt to program logs for verification"
+      ],
+      "discriminator": [
+        217,
+        14,
+        199,
+        116,
+        213,
+        107,
+        189,
+        189
+      ],
+      "accounts": [],
+      "args": []
+    },
+    {
+      "name": "update_metadata",
+      "discriminator": [
+        170,
+        182,
+        43,
+        239,
+        97,
+        78,
+        225,
+        186
+      ],
+      "accounts": [
+        {
+          "name": "atom_id",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_metadata",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "upgrade_atomid",
+      "discriminator": [
+        123,
+        95,
+        191,
+        167,
+        212,
+        15,
+        103,
+        33
+      ],
+      "accounts": [
+        {
+          "name": "atom_id",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "atom_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  111,
+                  109,
+                  105,
+                  100,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "atom_mint",
+          "writable": true
+        },
+        {
+          "name": "old_sas_attestation",
+          "writable": true
+        },
+        {
+          "name": "new_sas_attestation",
+          "writable": true
+        },
+        {
+          "name": "sas_credential"
+        },
+        {
+          "name": "sas_schema"
+        },
+        {
+          "name": "sas_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  97,
+                  115,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sas_event_authority"
+        },
+        {
+          "name": "sas_program"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "burn_amount",
+          "type": "u64"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AtomConfig",
+      "discriminator": [
+        239,
+        137,
+        245,
+        161,
+        255,
+        250,
+        190,
+        145
+      ]
+    },
+    {
+      "name": "AtomId",
+      "discriminator": [
+        96,
+        151,
+        66,
+        220,
+        77,
+        211,
+        131,
+        154
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AtomIdCreated",
+      "discriminator": [
+        255,
+        26,
+        84,
+        33,
+        161,
+        89,
+        105,
+        249
+      ]
+    },
+    {
+      "name": "AtomIdUpgraded",
+      "discriminator": [
+        118,
+        196,
+        77,
+        70,
+        208,
+        59,
+        198,
+        218
+      ]
+    },
+    {
+      "name": "ConfigInitialized",
+      "discriminator": [
+        181,
+        49,
+        200,
+        156,
+        19,
+        167,
+        178,
+        91
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientBurnAmount",
+      "msg": "Burn amount is below minimum required"
+    },
+    {
+      "code": 6001,
+      "name": "MetadataTooLong",
+      "msg": "Metadata exceeds maximum length of 200 characters"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidBurnMint",
+      "msg": "Invalid burn mint address"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid token account"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTokenProgram",
+      "msg": "Invalid token program"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: not the owner or admin"
+    },
+    {
+      "code": 6006,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6007,
+      "name": "TooManyRankThresholds",
+      "msg": "Too many rank thresholds (max 10)"
+    },
+    {
+      "code": 6008,
+      "name": "RankThresholdsNotSorted",
+      "msg": "Rank thresholds must be sorted in ascending order"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidSasCredential",
+      "msg": "Invalid SAS credential address"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidSasSchema",
+      "msg": "Invalid SAS schema address"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidSasAuthority",
+      "msg": "Invalid SAS authority"
+    }
+  ],
+  "types": [
+    {
+      "name": "AtomConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_create_burn",
+            "type": "u64"
+          },
+          {
+            "name": "rank_thresholds",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "burn_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "sas_credential",
+            "type": "pubkey"
+          },
+          {
+            "name": "sas_schema",
+            "type": "pubkey"
+          },
+          {
+            "name": "sas_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AtomId",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_burned",
+            "type": "u64"
+          },
+          {
+            "name": "rank",
+            "type": "u8"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "created_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "updated_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AtomIdCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_burned",
+            "type": "u64"
+          },
+          {
+            "name": "rank",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AtomIdUpgraded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_burned",
+            "type": "u64"
+          },
+          {
+            "name": "old_rank",
+            "type": "u8"
+          },
+          {
+            "name": "new_rank",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_create_burn",
+            "type": "u64"
+          },
+          {
+            "name": "burn_mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

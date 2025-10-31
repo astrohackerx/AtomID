@@ -78,9 +78,9 @@ async function main() {
   // ==========================================
   // IMPORTANT: Update these values after running setup-sas.ts
   // ==========================================
-  const sasCredential = new PublicKey("5Ldy7HgzHqmQvX6xQJShzzinmM6yj7bQWLSzAAbUE4Nr");
-  const sasSchema = new PublicKey("833nW63cXf3q14uz1otraFknAeMAfw8yFwEPGmAhG8xA");
-  const sasAuthority = new PublicKey("8YUtFGXQqUzvbzZMSLZckqfhk5uEaNXLTSbsmWaLmtqF");
+  const sasCredential = new PublicKey("FwzkkBBBcW69tGhQCuuMry8SzS5zN886Qzjw8UDa1aAN");
+  const sasSchema = new PublicKey("J7nRQzymcR6sot5rLcRGBU5JfwVBhLVc9xNzsLnc2J4v");
+  const sasAuthority = new PublicKey("EmCCwiu5aPLiePCrYxFJk33aEEYnqJXxALawP19t3GgS");
 
   console.log("\n🔗 SAS Integration:");
   console.log("  SAS Credential:", sasCredential.toString());
