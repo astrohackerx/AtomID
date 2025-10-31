@@ -106,17 +106,18 @@ console.log("Burned:", atomId.totalBurned.toNumber() / 1_000_000, "ATOM");
 
 | Rank | Minimum Burned | Name | Description |
 |------|----------------|------|-------------|
-| 0 | 0 - 999 | Initiate | Starting level |
+| 0 | 0 - 999 | Initiate | Beginning the journey |
 | 1 | 1,000+ | Believer | First commitment |
-| 2 | 5,000+ | Committed | Growing dedication |
-| 3 | 10,000+ | Devoted | Strong conviction |
-| 4 | 25,000+ | Faithful | Deep commitment |
-| 5 | 50,000+ | Dedicated | Serious believer |
-| 6 | 100,000+ | Champion | Elite status |
-| 7 | 250,000+ | Legend | Exceptional proof |
-| 8 | 500,000+ | Mythic | Extraordinary |
-| 9 | 1,000,000+ | Transcendent | Nearly eternal |
-| 10 | 5,000,000+ | Eternal | Ultimate sacrifice |
+| 2 | 5,000+ | Devotee | Growing dedication |
+| 3 | 10,000+ | Guardian | Protected by faith |
+| 4 | 25,000+ | Keeper | Preserving the vision |
+| 5 | 50,000+ | Oracle | Wisdom through sacrifice |
+| 6 | 100,000+ | Architect | Building the future |
+| 7 | 250,000+ | Sage | Deep understanding |
+| 8 | 500,000+ | Ascended | Transcendent proof |
+| 9 | 1,000,000+ | Eternal | Ultimate sacrifice |
+
+**[View Complete Rank System →](./docs/RANK_SYSTEM.md)**
 
 ---
 

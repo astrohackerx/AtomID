@@ -172,15 +172,14 @@ console.log("Created:", `https://solscan.io/tx/${tx}`);
 |------|-----------|------|
 | 0 | 0 - 999 | Initiate |
 | 1 | 1,000+ | Believer |
-| 2 | 5,000+ | Committed |
-| 3 | 10,000+ | Devoted |
-| 4 | 25,000+ | Faithful |
-| 5 | 50,000+ | Dedicated |
-| 6 | 100,000+ | Champion |
-| 7 | 250,000+ | Legend |
-| 8 | 500,000+ | Mythic |
-| 9 | 1,000,000+ | Transcendent |
-| 10 | 5,000,000+ | Eternal |
+| 2 | 5,000+ | Devotee |
+| 3 | 10,000+ | Guardian |
+| 4 | 25,000+ | Keeper |
+| 5 | 50,000+ | Oracle |
+| 6 | 100,000+ | Architect |
+| 7 | 250,000+ | Sage |
+| 8 | 500,000+ | Ascended |
+| 9 | 1,000,000+ | Eternal |
 
 ---
 

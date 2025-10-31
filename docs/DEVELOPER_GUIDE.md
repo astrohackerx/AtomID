@@ -669,19 +669,18 @@ export default AtomIdProfile;
 
 AtomID uses a rank system based on total $ATOM burned:
 
-| Rank | Minimum Burned | Description |
-|------|----------------|-------------|
-| 0    | 0 - 999        | Initiate |
-| 1    | 1,000+         | Believer |
-| 2    | 5,000+         | Committed |
-| 3    | 10,000+        | Devoted |
-| 4    | 25,000+        | Faithful |
-| 5    | 50,000+        | Dedicated |
-| 6    | 100,000+       | Champion |
-| 7    | 250,000+       | Legend |
-| 8    | 500,000+       | Mythic |
-| 9    | 1,000,000+     | Transcendent |
-| 10   | 5,000,000+     | Eternal |
+| Rank | Minimum Burned | Name | Description |
+|------|----------------|------|-------------|
+| 0    | 0 - 999        | Initiate | Beginning the journey |
+| 1    | 1,000+         | Believer | First commitment |
+| 2    | 5,000+         | Devotee | Growing dedication |
+| 3    | 10,000+        | Guardian | Protected by faith |
+| 4    | 25,000+        | Keeper | Preserving the vision |
+| 5    | 50,000+        | Oracle | Wisdom through sacrifice |
+| 6    | 100,000+       | Architect | Building the future |
+| 7    | 250,000+       | Sage | Deep understanding |
+| 8    | 500,000+       | Ascended | Transcendent proof |
+| 9    | 1,000,000+     | Eternal | Ultimate sacrifice |
 
 *Note: Actual thresholds are configurable by the program admin*
 
