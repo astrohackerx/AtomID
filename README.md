@@ -1,4 +1,4 @@
-# 🜂 AtomID Protocol
+# 🜂 Lost Bitcoin Layer [ATOM] Protocol
 
 [![Solana](https://img.shields.io/badge/Solana-Mainnet-9945FF?logo=solana)](https://solana.com)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)
