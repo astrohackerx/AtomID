@@ -57,7 +57,7 @@ async function main() {
   console.log("╚═══════════════════════════════════════════════════════════════╝\n");
 
   // Setup connection and wallet
-  const connection = new Connection("https://broken-fittest-wave.solana-mainnet.quiknode.pro/93f43b5d1f507f1468eeafccc4c861ce5e7bbe03/", "confirmed");
+  const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed"); //change to custom rpc
   const walletPath = process.env.HOME + "/.config/solana/id.json";
   const keypairData = JSON.parse(fs.readFileSync(walletPath, "utf-8"));
   const payer = Keypair.fromSecretKey(new Uint8Array(keypairData));
@@ -78,7 +78,7 @@ async function main() {
 
   console.log("🔧 Configuration");
   console.log("─────────────────────────────────────────────────────────────");
-  console.log("Network:        Devnet");
+  console.log("Network:        Mainnet");
   console.log("Program ID:     ", programId.toString());
   console.log("Payer:          ", payer.publicKey.toString());
   console.log("Burn Mint:      ", burnMint.toString());
@@ -89,10 +89,6 @@ async function main() {
   const balance = await connection.getBalance(payer.publicKey);
   console.log("💰 Payer Balance:", (balance / 1e9).toFixed(4), "SOL");
 
-  if (balance < 0.1e9) {
-    console.log("⚠️  Low balance! Get devnet SOL from: https://faucet.solana.com/");
-    console.log("");
-  }
 
   // Derive all PDAs
   const pdas = derivePDAs(programId, payer.publicKey, sasCredential, sasSchema);
@@ -361,14 +357,6 @@ async function main() {
       console.log("   Rank:         ", upgradedAtomId.rank, "(was:", existingAtomId.rank + ")");
       console.log("   Metadata:     ", upgradedAtomId.metadata);
       console.log("   Updated at:   ", upgradedAtomId.updatedAtSlot.toString());
-
-      // Check old attestation closed
-      const oldAttestationInfo = await connection.getAccountInfo(oldAttestationPda);
-      if (!oldAttestationInfo) {
-        console.log("\n✅ Old attestation successfully closed");
-      } else {
-        console.log("\n⚠️  Old attestation still exists (unexpected)");
-      }
 
       // Check new attestation created
       const newAttestationInfo = await connection.getAccountInfo(newSasAttestationPda);
