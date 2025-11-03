@@ -1,5 +1,5 @@
 {
-  "name": "@atomid/sdk",
+  "name": "atomid-sdk",
   "version": "1.0.0",
   "description": "Solana AtomID SDK - Verify proof-of-sacrifice ranks and gate access in your dApp",
   "main": "dist/index.js",
