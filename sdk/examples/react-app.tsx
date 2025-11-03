@@ -11,7 +11,7 @@ import {
   AtomIDGate,
   RankBadge,
   RankProgressBar
-} from "@atomid/sdk/react";
+} from "atomid-sdk/react";
 
 // Wrap your app with AtomIDProvider
 export function App() {

@@ -2,7 +2,7 @@
  * Basic AtomID SDK Usage Examples
  */
 
-import { AtomIDClient, getRankName, getRankEmoji } from "@atomid/sdk";
+import { AtomIDClient, getRankName, getRankEmoji } from "atomid-sdk";
 import { PublicKey } from "@solana/web3.js";
 
 async function example1_verifyWallet() {
