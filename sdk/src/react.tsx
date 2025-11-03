@@ -46,6 +46,8 @@ export function useAtomIDAccount(wallet?: PublicKey | string) {
     let cancelled = false;
 
     async function load() {
+      if (!wallet) return;
+
       try {
         setLoading(true);
         setError(null);
