@@ -2,6 +2,8 @@
 
 **Official SDK for integrating AtomID 🜂 verification in your Solana dApp**
 
+(lostatom.org)[https://lostatom.org]
+
 Verify proof-of-sacrifice ranks and gate access based on user commitment. Perfect for creating tiered features, exclusive content, or reputation-based systems.
 
 ## Installation
