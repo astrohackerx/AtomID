@@ -4,7 +4,7 @@
 
 Verify proof-of-sacrifice ranks and gate access based on user commitment. Perfect for creating tiered features, exclusive content, or reputation-based systems.
 
-(lostatom.org)[https://lostatom.org]
+[lostatom.org](https://lostatom.org)
 
 ## Installation
 
