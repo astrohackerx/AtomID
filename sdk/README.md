@@ -1,4 +1,4 @@
-# @atomid/sdk
+# atomid-sdk
 
 **Official SDK for integrating AtomID verification in your Solana dApp**
 
@@ -7,7 +7,7 @@ Verify proof-of-sacrifice ranks and gate access based on user commitment. Perfec
 ## Installation
 
 ```bash
-npm install @atomid/sdk @solana/web3.js
+npm install atomid-sdk @solana/web3.js
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ npm install @atomid/sdk @solana/web3.js
 ### Basic Usage
 
 ```typescript
-import { AtomIDClient } from "@atomid/sdk";
+import { AtomIDClient } from "atomid-sdk";
 import { PublicKey } from "@solana/web3.js";
 
 // Initialize client
@@ -34,7 +34,7 @@ if (result.exists && result.account) {
 ### Gate Access by Rank
 
 ```typescript
-import { AtomIDClient } from "@atomid/sdk";
+import { AtomIDClient } from "atomid-sdk";
 
 const client = new AtomIDClient();
 
@@ -51,7 +51,7 @@ if (hasAccess) {
 ### React Integration
 
 ```tsx
-import { AtomIDProvider, useAtomIDRank, AtomIDGate } from "@atomid/sdk/react";
+import { AtomIDProvider, useAtomIDRank, AtomIDGate } from "atomid-sdk/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 function App() {
@@ -152,7 +152,7 @@ import {
   getProgressToNextRank,
   formatAtomAmount,
   shortenAddress
-} from "@atomid/sdk";
+} from "atomid-sdk";
 
 // Get rank name
 getRankName(5); // "Oracle"
@@ -231,6 +231,10 @@ const { percentage, atomsNeeded, nextRank, loading } = useRankProgress(publicKey
 ### 1. Tiered Access Control
 
 ```typescript
+import { AtomIDClient } from "atomid-sdk";
+
+const client = new AtomIDClient();
+
 // NFT minting with rank discounts
 const rank = await client.getRank(wallet);
 const price = BASE_PRICE * (1 - rank * 0.1); // 10% off per rank
@@ -301,7 +305,7 @@ const credibilityScore = account
 ### Custom Gate Function
 
 ```typescript
-import { createAtomIDGate } from "@atomid/sdk";
+import { createAtomIDGate } from "atomid-sdk";
 
 const gate = createAtomIDGate(client, {
   requirement: { minRank: 5 },
@@ -315,7 +319,7 @@ const canAccess = await gate(wallet);
 ### Programmatic Gating
 
 ```typescript
-import { gateByRank } from "@atomid/sdk";
+import { gateByRank } from "atomid-sdk";
 
 // Wrap any async function
 const result = await gateByRank(
@@ -352,7 +356,7 @@ import type {
   VerificationResult,
   RankRequirement,
   AtomIDConfig
-} from "@atomid/sdk";
+} from "atomid-sdk";
 ```
 
 ## Performance
