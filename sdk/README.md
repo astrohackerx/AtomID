@@ -14,14 +14,25 @@ npm install atomid-sdk @solana/web3.js
 
 ## Quick Start
 
+### RPC Endpoint Configuration
+
+**IMPORTANT:** You must provide a custom RPC endpoint. The default public RPC (`api.mainnet-beta.solana.com`) has rate limits and may not work reliably.
+
+Get a free RPC endpoint from:
+- [Helius](https://helius.dev)
+- [QuickNode](https://www.quicknode.com)
+- [Alchemy](https://www.alchemy.com)
+
 ### Basic Usage
 
 ```typescript
-import { AtomIDClient } from "atomid-sdk";
+import { AtomIDClient, formatAtomAmount } from "atomid-sdk";
 import { PublicKey } from "@solana/web3.js";
 
-// Initialize client
-const client = new AtomIDClient();
+// Initialize client with your RPC endpoint
+const client = new AtomIDClient({
+  rpcUrl: process.env.SOLANA_RPC_URL // Set this in your .env file
+});
 
 // Verify a wallet's AtomID
 const wallet = new PublicKey("...");
@@ -29,7 +40,7 @@ const result = await client.verify(wallet);
 
 if (result.exists && result.account) {
   console.log(`Rank: ${result.account.rank}`);
-  console.log(`Total Burned: ${result.account.totalBurned}`);
+  console.log(`Total Burned: ${formatAtomAmount(result.account.totalBurned)} ATOM`);
 }
 ```
 
@@ -38,7 +49,9 @@ if (result.exists && result.account) {
 ```typescript
 import { AtomIDClient } from "atomid-sdk";
 
-const client = new AtomIDClient();
+const client = new AtomIDClient({
+  rpcUrl: process.env.SOLANA_RPC_URL
+});
 
 // Check if user has minimum rank
 const hasAccess = await client.hasMinimumRank(wallet, 5); // Requires Oracle rank
@@ -173,8 +186,11 @@ getNextRankRequirement(5);
 getProgressToNextRank(BigInt(75000), 5);
 // { percentage: 50, atomsNeeded: 25000n, nextRank: 6 }
 
-// Format numbers
-formatAtomAmount(BigInt(1000000)); // "1,000,000"
+// Format ATOM amounts (automatically handles 6 decimals)
+formatAtomAmount(BigInt(1000000000)); // "1,000" (1000 ATOM with 6 decimals)
+formatAtomAmount(BigInt(5000000000)); // "5,000" (5000 ATOM)
+
+// Shorten addresses
 shortenAddress("7xKXtg...8yGHZ9w"); // "7xKX...Z9w"
 ```
 

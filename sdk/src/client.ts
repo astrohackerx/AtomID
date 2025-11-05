@@ -39,19 +39,32 @@ export class AtomIDClient {
     wallet: PublicKey,
     pda: PublicKey
   ): AtomIDAccount {
-    const rank = data[73] as AtomIDRank;
-    const totalBurned = data.readBigUInt64LE(41);
-    const atomsMinted = data.readBigUInt64LE(49);
-    const createdAtTimestamp = Number(data.readBigUInt64LE(57));
-    const lastBurnedAtTimestamp = Number(data.readBigUInt64LE(65));
+    // Struct layout:
+    // 0-7: discriminator
+    // 8-39: owner (32 bytes)
+    // 40-47: total_burned (u64)
+    // 48: rank (u8)
+    // 49-52: metadata length (u32)
+    // 53+: metadata string (variable length)
+    // after metadata: created_at_slot (u64)
+    // after that: updated_at_slot (u64)
+    // after that: bump (u8)
+
+    const totalBurned = data.readBigUInt64LE(40);
+    const rank = data[48] as AtomIDRank;
+    const metadataLength = data.readUInt32LE(49);
+
+    // Calculate offset after variable-length metadata
+    const afterMetadata = 53 + metadataLength;
+    const createdAtSlot = Number(data.readBigUInt64LE(afterMetadata));
+    const updatedAtSlot = Number(data.readBigUInt64LE(afterMetadata + 8));
 
     return {
       wallet,
       rank,
       totalBurned,
-      atomsMinted,
-      createdAt: new Date(createdAtTimestamp * 1000),
-      lastBurnedAt: new Date(lastBurnedAtTimestamp * 1000),
+      createdAtSlot,
+      updatedAtSlot,
       pda
     };
   }
@@ -143,21 +156,21 @@ export class AtomIDClient {
 
   async getLeaderboard(limit: number = 100): Promise<AtomIDAccount[]> {
     const programAccounts = await this.connection.getProgramAccounts(
-      this.programId,
-      {
-        filters: [
-          {
-            dataSize: 74
-          }
-        ]
-      }
+      this.programId
     );
 
-    const accounts = programAccounts.map(({ pubkey, account }) => {
-      const walletBytes = account.data.slice(8, 40);
-      const wallet = new PublicKey(walletBytes);
-      return this.parseAtomIDAccount(account.data, wallet, pubkey);
-    });
+    // Filter to only AtomID accounts (discriminator: 609742dc4dd3839a)
+    const atomIdDiscriminator = Buffer.from('609742dc4dd3839a', 'hex');
+
+    const accounts = programAccounts
+      .filter(({ account }) => {
+        return account.data.slice(0, 8).equals(atomIdDiscriminator);
+      })
+      .map(({ pubkey, account }) => {
+        const walletBytes = account.data.slice(8, 40);
+        const wallet = new PublicKey(walletBytes);
+        return this.parseAtomIDAccount(account.data, wallet, pubkey);
+      });
 
     accounts.sort((a, b) => {
       if (a.rank !== b.rank) {

@@ -1,4 +1,4 @@
-import { AtomIDRank, RANK_NAMES, RANK_THRESHOLDS } from "./types";
+import { AtomIDRank, RANK_NAMES, RANK_THRESHOLDS, ATOM_DECIMALS, DECIMALS_MULTIPLIER } from "./types";
 
 export function getRankName(rank: AtomIDRank): string {
   return RANK_NAMES[rank];
@@ -68,7 +68,22 @@ export function getProgressToNextRank(
   };
 }
 
-export function formatAtomAmount(amount: bigint): string {
+export function rawToHumanReadable(rawAmount: bigint): number {
+  return Number(rawAmount) / Number(DECIMALS_MULTIPLIER);
+}
+
+export function humanReadableToRaw(humanAmount: number): bigint {
+  return BigInt(Math.floor(humanAmount * Number(DECIMALS_MULTIPLIER)));
+}
+
+export function formatAtomAmount(amount: bigint, includeDecimals: boolean = true): string {
+  if (includeDecimals) {
+    const humanAmount = rawToHumanReadable(amount);
+    return humanAmount.toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+  }
   const str = amount.toString();
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

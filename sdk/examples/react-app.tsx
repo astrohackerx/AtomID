@@ -12,6 +12,7 @@ import {
   RankBadge,
   RankProgressBar
 } from "atomid-sdk/react";
+import { formatAtomAmount } from "atomid-sdk";
 
 // Wrap your app with AtomIDProvider
 export function App() {
@@ -37,7 +38,7 @@ function UserProfile() {
         <span className="name">{rankName}</span>
         <span className="number">Rank {rank}</span>
       </div>
-      <p>Total Burned: {totalBurned.toString()} ATOM</p>
+      <p>Total Burned: {formatAtomAmount(totalBurned)} ATOM</p>
     </div>
   );
 }
